@@ -21,3 +21,8 @@ npm install -g npx
 cd caas-frontend
 npm start
 ```
+
+### Conventions for repo
+* Add story / ticket number in front of each commit. e.g.: CAAS-1: <Commit Message>
+* Branch names - preferably start with feature/CAAS-<TICKET_NUMBER>
+* Hotfix branches: hotfix/<issue-being-fixed>
