@@ -1,12 +1,28 @@
 import React, { useState } from "react";
 import axios from 'axios';
+const io = require("socket.io-client");
+// replace the secret in production to be a different value
+const CORS_APP_SECRET = process.env.CORS_APP_SECRET || 'abcd1234123';
 
 var CAAS_BACKEND_URL = process.env.CAAS_BACKEND_URL || 'http://localhost:8080';
+var SOCKET_BACKEND_URL = process.env.SOCKET_BACKEND_URL || 'http://localhost:8081';
 
 function App() {
 
   // declare a new state variable called 'fileSelectedForUpload
   const [fileSelectedForUpload, setFileSelectedForUpload] = useState(null);
+
+  // start socket
+  var socket = io(SOCKET_BACKEND_URL, {
+    withCredentials: true,
+    extraHeaders: {
+      'x-custom-auth': CORS_APP_SECRET
+    }
+  });
+
+  socket.on('specialEventResponse', (msg) => {
+    console.log("Received response from socket server: " + msg);
+  });
 
   const submitForm = (event) => {
     // this is needed otherwise Chrome cancels the requests preflight
@@ -34,6 +50,7 @@ function App() {
            }
          });
     console.log("File upload handler completed!");
+    socket.emit("specialEvent", "User has uploaded file!");
   };
 
   return (
